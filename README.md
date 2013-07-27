@@ -41,21 +41,34 @@ $message2 = new \Symflo\MongoDBODM\Document\MessageDocument();
 $message2->setText('Text2');
 
 $dm->batchInsert(array($message, $message2));
+?>
+```
+Simple Insert, update and delete.
 
-//Simple Insert and update and delete
+```php
+<?php
 $user = new \Symflo\MongoDBODM\Document\UserDocument();
 $user->setUsername('CN');
 $user->setFirstname('Chuck');
 $user->setMessage($message); //manual reference
 $user->setMessages(array($message, $message2)); //manual references
 $user->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'));
+//insert
 $dm->save($user);
 
+//update
 $user->setFirstname('Chucky')
 $dm->save($user);
-$dm->remove($user);
 
-//Native Query
+//delete
+$dm->remove($user);
+?>
+```
+
+To find objects, use native query from `\MongoCollection`.
+
+```php
+<?php
 $coll = $dm->getCollection('users');
 $users = $coll->find(); //return DocumentCollection
 $user = $coll->findOne(array('username' => 'CN')); //return Document
@@ -63,16 +76,26 @@ $user->getUsername(); //return 'CN'
 $user->getMongoId(); //return \MongoId
 
 $coll->drop();
+?>
+```
+Create query with your object collection.
 
-//Create your query with your object collection
+Without joins:
+```php
+<?php
 $coll = $dm->getCollection('users');
 $user = $coll->findOneByUsername('CN');
 $user->getMessages(); //return null
 $user->getMessageIds(); //return \MongoId array
 $user->getMessage(); //return null
 $user->getMessageId(); //return \MongoId
+?>
+```
 
-//Use join
+With joins:
+
+```php
+<?php
 $coll->addJoin('messageId')
      ->addJoin('messageIds')
      ->findOneByUsername('TES3');

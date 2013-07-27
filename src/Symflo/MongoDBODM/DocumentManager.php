@@ -121,15 +121,6 @@ class DocumentManager
     {
         $this->preCreate($document);
 
-        /*$manualRefproperties = CollectionHandler::getPropertiesForTypeForDocument($document, 'manualReferences');
-        foreach ($manualRefproperties as $manualRefproperty) {
-            $getter = 'get'.ucfirst($manualRefproperty['property']);
-            //$setter = 'set'.ucfirst($manualRefproperty['property']);
-            $refIds = $document->$getter();
-        }
-        
-        
-        var_dump($properties);*/
         $properties = $this->getPropertiesToSave($document);
 
         $this->collection->save($properties);
