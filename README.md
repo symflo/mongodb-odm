@@ -131,7 +131,6 @@ $config = array(
 ?>
 ```
 
-
 ## Create your document
 
 ```php
@@ -284,7 +283,7 @@ class UserCollection extends Collection
     }
 }
 ?>
-``
+```
 
 ## Create your own type
 ```php
