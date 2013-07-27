@@ -109,6 +109,13 @@ $user->getMessageId(); //return \MongoId
 
 ## Installation
 
+Use Composer to install this library.
+
+Into your composer.json file, just include this library with adding:
+
+"symflo/mongodb-odm": "dev-master"
+Then, run composer update symflo/mongodb-odm and enjoy.
+
 
 ## Prepare your config
 ```php
