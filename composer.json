@@ -1,0 +1,22 @@
+{
+    "name": "symflo/mongodb-odm",
+    "description": "MongoDB object document mapper",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "symflo"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.0",
+        "symfony/serializer": "2.4.*@dev"
+    },
+    "suggest": {
+    },
+    "autoload": {
+        "psr-0": {
+            "Symflo": ["src/"]
+        }
+    }
+}
