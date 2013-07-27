@@ -36,11 +36,9 @@ $dm = DocumentManagerFactory::create($config);
 //Multiple insert
 $message = new \Symflo\MongoDBODM\Document\MessageDocument();
 $message->setText('Text1');
-$dm->save($message);
 
 $message2 = new \Symflo\MongoDBODM\Document\MessageDocument();
 $message2->setText('Text2');
-$dm->save($message2);
 
 $dm->batchInsert(array($message, $message2));
 
