@@ -21,4 +21,12 @@ interface TypeInterface
      * @return string
      */
     public function getError();
+
+    /**
+     * hydrate
+     * @param  mixed $value
+     * @param  array $propertyOptions
+     * @return mixed
+     */
+    public function hydrate($value, $propertyOptions);
 }

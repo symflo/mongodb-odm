@@ -13,7 +13,7 @@ class DateType implements TypeInterface
      */
     public function validate($value)
     {
-        return true;
+        return ($value instanceof \MongoDate);
     }
 
     /**
@@ -21,5 +21,13 @@ class DateType implements TypeInterface
      */
     public function getError()
     {
+    }
+
+    /**
+     * {% inheritdoc %}
+     */
+    public function hydrate($value, $propertyOptions)
+    {
+        return $value;
     }
 }

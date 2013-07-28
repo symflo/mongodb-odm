@@ -140,13 +140,26 @@ class DocumentManager
     }
 
     /**
+     * push
+     * @param  DocumentInterface $document       
+     * @param  string            $property      
+     * @param  DocumentInterface $documentToPush                           
+     */
+    public function push(DocumentInterface $document, $property, DocumentInterface $documentToPush)
+    {
+        $this->collection->update(
+            array("_id" => $document->getMongoId()), 
+            array('$push' => array($property => $this->getPropertiesToSave($documentToPush)))
+        );
+    }
+
+    /**
      * getPropertiesToSave
      * @param  DocumentInterface $document
      * @return array
      */
     public function getPropertiesToSave(DocumentInterface $document)
     {
-        $this->collectionHandler->getNormalizer()->setAttributes(array_keys($document->getProperties()));
         return $this->collectionHandler->getNormalizer()->normalize($document);
     }
 

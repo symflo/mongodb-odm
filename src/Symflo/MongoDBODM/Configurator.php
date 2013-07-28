@@ -9,6 +9,7 @@ namespace Symflo\MongoDBODM;
 class Configurator
 {
     private $config;
+    private $defaultConfig = array();
 
     /**
      * setConfig
@@ -30,6 +31,7 @@ class Configurator
     private function mergeConfig(array $config)
     {
         $defaultConfig = $this->getDefaultConfig();
+
         if (array_key_exists('types', $config)) {
             $types = array_merge($defaultConfig['types'], $config['types']);
             unset($defaultConfig['types']);
@@ -45,20 +47,28 @@ class Configurator
      */
     public function getDefaultConfig()
     {
-        return array(
-            'user'                => '',
-            'password'            => '',
-            'host'                => '127.0.0.1',
-            'baseMongoCollection' => 'Symflo\MongoDBODM\Document\Collection',
-            'types'               => array(
-                'date'             => new \Symflo\MongoDBODM\Type\DateType(),
-                'string'           => new \Symflo\MongoDBODM\Type\StringType(),
-                'integer'          => new \Symflo\MongoDBODM\Type\StringType(),
-                'pass'             => new \Symflo\MongoDBODM\Type\PassType(),
-                'manualReference'  => new \Symflo\MongoDBODM\Type\ManualReferenceType(),
-                'manualReferences' => new \Symflo\MongoDBODM\Type\ManualReferencesType(),
-            )
-        );
+        if ($this->defaultConfig == array()) {
+            $this->defaultConfig = array(
+                'user'                => '',
+                'password'            => '',
+                'host'                => '127.0.0.1',
+                'baseMongoCollection' => 'Symflo\MongoDBODM\Document\Collection',
+                'types'               => array()
+            );    
+        }
+
+        return $this->defaultConfig;
+    }
+
+    /**
+     * Set SetDefaultTypes.
+     * @param  $setDefaultTypes SetDefaultTypes value
+     */
+    public function setDefaultTypes(array $defaultTypes)
+    {
+        $defaultConfig = $this->getDefaultConfig();
+        $defaultConfig['types'] = $defaultTypes;
+        $this->defaultConfig = $defaultConfig;
     }
 
     /**
@@ -115,11 +125,16 @@ class Configurator
      * @param  string $name
      * @return Symflo\MongoDBODM\Type\TypeInterface
      * @throws \InvalidArgumentException If name does not exist in config
+     * @throws \Exception If type is not instance of \Symflo\MongoDBODM\Type\TypeInterface
      */
     public function getTypeForName($name)
     {
         if (!array_key_exists($name, $this->config['types'])) {
-            throw new \InvalidArgumentException(sprintf('Type %s is not define', $name));
+            throw new \InvalidArgumentException(sprintf('Type %s is not defined', $name));
+        }
+
+        if (!$this->config['types'][$name] instanceof \Symflo\MongoDBODM\Type\TypeInterface) {
+            throw new \Exception(sprintf("Type for name %s is not instance of \Symflo\MongoDBODM\Type\TypeInterface", $name));
         }
 
         return $this->config['types'][$name];

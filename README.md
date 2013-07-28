@@ -107,6 +107,37 @@ $user->getMessageId(); //return \MongoId
 ?>
 ```
 
+Manage simple collection.
+
+```
+<?php
+$roleAdmin = new \Symflo\MongoDBODM\Document\RoleDocument();
+$roleAdmin->setRole('ROLE_ADMIN');
+$roleAdmin->setAddedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+$roleSuperAdmin = new \Symflo\MongoDBODM\Document\RoleDocument();
+$roleSuperAdmin->setRole('ROLE_SUPER_ADMIN');
+$roleSuperAdmin->setAddedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+$user = new \Symflo\MongoDBODM\Document\UserDocument();
+$user->setUsername('TES3');
+$user->setFirstname('Norris');
+$user->setMessage($message);
+$user->setMessages(array($message, $message2));
+$user->setCreatedAt(new \MongoDate());
+$user->setRoles(new DocumentCollection(array($roleAdmin, $roleAdmin, $roleSuperAdmin))); //Collection in user
+$dm->save($user);
+
+$roleRoot = new \Symflo\MongoDBODM\Document\RoleDocument();
+$roleRoot->setRole('ROLE_ROOT');
+$roleRoot->setAddedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+//push end roles collection
+$dm->push($user, 'roles', $roleRoot);
+
+?>
+```
+
 ## Installation
 
 Use Composer to install this library.

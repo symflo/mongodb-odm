@@ -14,7 +14,7 @@ class ValidatorDocument implements ValidatorDocumentInterface
     protected $errors = array();
 
     /**
-     * __construct]
+     * __construct
      * @param Configurator $configurator
      */
     public function __construct(Configurator $configurator)

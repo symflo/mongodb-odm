@@ -3,17 +3,17 @@
 namespace Symflo\MongoDBODM\Type;
 
 /**
- * PassType
+ * IntegerType
  * @author Florent Mondoloni
  */
-class PassType implements TypeInterface
+class IntegerType implements TypeInterface
 {
     /**
      * {% inheritdoc %}
      */
     public function validate($value)
     {
-        return true;
+        return is_numeric($value);
     }
 
     /**
@@ -21,7 +21,7 @@ class PassType implements TypeInterface
      */
     public function getError()
     {
-        return '';
+        return 'Value is not integer';
     }
 
     /**

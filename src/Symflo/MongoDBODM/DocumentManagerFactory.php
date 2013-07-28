@@ -25,13 +25,28 @@ class DocumentManagerFactory
     {
         $configurator = new Configurator();
         $m = new Connection($configurator);
+
+        $normalizer = new ODMNormalizer();
+        $collectionHandler = new CollectionHandler($normalizer, $configurator);
+        $validatorDocument = new ValidatorDocument($configurator);
+
+        $documentManager = new DocumentManager($m, $collectionHandler, $validatorDocument);
+
+        //type services
+        $types = array(
+            'date'             => new \Symflo\MongoDBODM\Type\DateType(),
+            'string'           => new \Symflo\MongoDBODM\Type\StringType(),
+            'integer'          => new \Symflo\MongoDBODM\Type\IntegerType(),
+            'pass'             => new \Symflo\MongoDBODM\Type\PassType(),
+            'manualReference'  => new \Symflo\MongoDBODM\Type\ManualReferenceType($documentManager),
+            'manualReferences' => new \Symflo\MongoDBODM\Type\ManualReferencesType($documentManager),
+            'collection'       => new \Symflo\MongoDBODM\Type\CollectionType($normalizer)
+        );
+
+        $m->getConfigurator()->setDefaultTypes($types);
         $m->getConfigurator()->setConfig($config);
         $m->init();
 
-        $normalizer = new ODMNormalizer();
-        $collectionHandler = new CollectionHandler($normalizer);
-        $validatorDocument = new ValidatorDocument($configurator);
-
-        return new DocumentManager($m, $collectionHandler, $validatorDocument);
+        return $documentManager;
     }
 }

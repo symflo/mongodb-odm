@@ -13,7 +13,7 @@ class StringType implements TypeInterface
      */
     public function validate($value)
     {
-        return is_string($value);
+        return (is_scalar($value) || (is_object($value) && is_callable(array($value, '__toString'))));
     }
 
     /**
@@ -22,5 +22,13 @@ class StringType implements TypeInterface
     public function getError()
     {
         return 'Value is not string';
+    }
+
+    /**
+     * {% inheritdoc %}
+     */
+    public function hydrate($value, $propertyOptions)
+    {
+        return $value;
     }
 }

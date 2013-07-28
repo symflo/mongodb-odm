@@ -4,6 +4,7 @@ namespace Symflo\MongoDBODM\Document;
 
 use Symflo\MongoDBODM\Normalizer\ODMNormalizer;
 use Symflo\MongoDBODM\Document\DocumentInterface;
+use Symflo\MongoDBODM\Type\ManualReferenceTypeInterface;
 
 /**
  * CollectionHandler
@@ -13,14 +14,17 @@ class CollectionHandler
 {
     protected $joins = array();
     private $documentManager;
+    private $configurator;
 
     /**
      * __construct
      * @param ODMNormalizer $normalizer
+     * @param $configurator
      */
-    public function __construct(ODMNormalizer $normalizer)
+    public function __construct(ODMNormalizer $normalizer, $configurator)
     {
-        $this->normalizer = $normalizer;
+        $this->normalizer   = $normalizer;
+        $this->configurator = $configurator;
     }
 
     /**
@@ -180,42 +184,24 @@ class CollectionHandler
             return $document;
         }
 
-        foreach (self::getPropertiesForTypeForDocument($document, 'manualReference') as $propertyOptions) {
-            if (!$this->hasJoin($propertyOptions['property'])) {
+        $referenceManualProperties = array();
+        foreach ($document->getProperties() as $property => $typeOptions) {
+            $typeObject = $this->configurator->getTypeForName($typeOptions['type']);
+
+            if (!$this->hasJoin($property) && $typeObject instanceof ManualReferenceTypeInterface) {
                 continue;
             }
+
+            $propertyOptions = array(
+                'property'  => $property, 
+                'reference' => (array_key_exists('reference', $typeOptions)) ? $typeOptions['reference']: null,
+                'target'    => (array_key_exists('target', $typeOptions)) ? $typeOptions['target']: $property
+            );
 
             $getter = 'get'.ucfirst($propertyOptions['property']);
             $setter = 'set'.ucfirst($propertyOptions['target']);
-            $refId = $document->$getter();
 
-            $referenceCollectionName = $propertyOptions['reference']::COLLECTION_NAME;
-
-            $reference = $this->documentManager
-                ->getCollection($referenceCollectionName)
-                ->findOne(array('_id' => $refId));
-
-            $document->$setter($reference);
-        }
-
-        foreach (self::getPropertiesForTypeForDocument($document, 'manualReferences') as $propertyOptions) {
-            if (!$this->hasJoin($propertyOptions['property'])) {
-                continue;
-            }
-
-            $getter = 'get'.ucfirst($propertyOptions['property']);
-            $setter = 'set'.ucfirst($propertyOptions['target']);
-            $refIds = array_unique($document->$getter());
-
-            if (count($refIds) == 0) {
-                continue;
-            }
-
-            $referenceCollectionName = $propertyOptions['reference']::COLLECTION_NAME;
-            $references = $this->documentManager
-                ->getCollection($referenceCollectionName)
-                ->find(array('_id' => array('$in' => $refIds)));
-            $document->$setter($references);
+            $document->$setter($typeObject->hydrate($document->$getter(), $propertyOptions));
         }
 
         return $document;
