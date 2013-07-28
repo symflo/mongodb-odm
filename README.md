@@ -109,7 +109,7 @@ $user->getMessageId(); //return \MongoId
 
 Manage simple collection.
 
-```
+```php
 <?php
 $roleAdmin = new \Symflo\MongoDBODM\Document\RoleDocument();
 $roleAdmin->setRole('ROLE_ADMIN');
