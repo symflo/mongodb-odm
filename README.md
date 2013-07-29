@@ -169,7 +169,9 @@ $config = array(
 ?>
 ```
 
-## Create your document
+## Create yours documents
+
+### User
 
 ```php
 <?php
@@ -209,6 +211,7 @@ class UserDocument implements DocumentInterface
             'createdAt'  => array('type' => 'date'),
             'messageId'  => array('type' => 'manualReference', 'reference' => 'Symflo\MongoDBODM\Document\MessageDocument', 'target' => 'message'),
             'messageIds' => array('type' => 'manualReferences', 'reference' => 'Symflo\MongoDBODM\Document\MessageDocument', 'target' => 'messages'),
+            'roles'      => array('type' => 'collection', 'reference' => 'Symflo\MongoDBODM\Document\RoleDocument')
         );
     }
 
@@ -296,8 +299,94 @@ class UserDocument implements DocumentInterface
 }
 ?>
 ```
+### Message
 
-Create if you want your document collection.
+```php
+<?php
+class MessageDocument implements DocumentInterface
+{
+    use \Symflo\MongoDBODM\Behaviour\MongoIdTrait;
+
+    const COLLECTION_NAME   = 'messages';
+    const COLLECTION_OBJECT = null;
+
+    private $text;
+
+    /**
+     * {% inheritdoc %}
+     */
+    public function getProperties()
+    {
+        return array(
+            'text'  => array('type' => 'string', 'required' => true)
+        );
+    }
+
+    public function getText()
+    {
+        return $this->text;
+    }
+    
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+}
+?>
+```
+
+### Role
+
+```php
+<?php
+
+namespace Symflo\MongoDBODM\Document;
+
+class RoleDocument implements DocumentInterface
+{
+    const COLLECTION_NAME   = null;
+    const COLLECTION_OBJECT = null;
+
+    private $role;
+    private $addedAt;
+
+    public function getProperties()
+    {
+        return array(
+            'role'    => array('type' => 'string', 'required' => true),
+            'addedAt' => array('type' => 'string', 'required' => true)
+        );
+    }
+
+    public function getMongoId()
+    {
+        return false;
+    }
+
+    public function getRole()
+    {
+        return $this->role;
+    }
+    
+    public function setRole($role)
+    {
+        $this->role = $role;
+    }
+
+    public function getAddedAt()
+    {
+        return $this->addedAt;
+    }
+    
+    public function setAddedAt($addedAt)
+    {
+        $this->addedAt = $addedAt;
+    }
+}
+?>
+```
+
+If you want create your document collection.
 
 ```php
 <?php
@@ -335,27 +424,73 @@ use Symflo\MongoDBODM\Type\TypeInterface;
  */
 class YourType implements TypeInterface
 {
-    /**
-     * {% inheritdoc %}
-     */
     public function validate($value)
     {
-        //own logic
+        //your own logic
     }
 
-    /**
-     * {% inheritdoc %}
-     */
     public function getError()
     {
         // return string
+    }
+
+    public function hydrate($value, $propertyOptions)
+    {
+        return $value;
     }
 }
 ?>
 ```
 Then add your class in your config.
 
+## Listeners
+
+Listeners list:
+- preSave
+- postSave
+- preCreate
+- postCreate
+- preUpdate
+- postUpdate
+- preRemove
+- postRemove
+
+Example on `UserDocument`
+
+```php
+<?php
+
+class UserDocument implements DocumentInterface
+{
+    // ...
+    public function preSave()
+    {
+        if ($this->getFirstname() == 'Norris') {
+            $this->setFirstname('Norris_test');
+        }
+    }
+
+    // ...
+?>
+```
+
+## Errors
+
+```php
+<?php
+
+if (!$dm->save($user)) {
+    foreach ($dm->getValidatorErrors() as $error) {
+        echo $error['property']; //property name
+        echo $error['document']; //class document
+        echo $error['message']; //message
+    }
+}
+
+?>
+```
+
 ## TODOS
-* Better errors management with exceptions
+* Better errors
 * Tests
 * Better docs

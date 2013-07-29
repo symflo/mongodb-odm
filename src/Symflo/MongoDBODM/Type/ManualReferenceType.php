@@ -26,7 +26,7 @@ class ManualReferenceType implements TypeInterface, ManualReferenceTypeInterface
      */
     public function validate($value)
     {
-        return true;
+        return ($value instanceof \MongoId);
     }
 
     /**
@@ -34,6 +34,7 @@ class ManualReferenceType implements TypeInterface, ManualReferenceTypeInterface
      */
     public function getError()
     {
+        return '';
     }
 
     /**

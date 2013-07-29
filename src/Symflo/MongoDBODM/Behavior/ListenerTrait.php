@@ -1,6 +1,6 @@
 <?php
 
-namespace Symflo\MongoDBODM\Behaviour;
+namespace Symflo\MongoDBODM\Behavior;
 
 use Symflo\MongoDBODM\Document\DocumentInterface;
 
@@ -15,6 +15,7 @@ trait ListenerTrait
      */
     public function preSave(DocumentInterface $document)
     {
+        $this->executeListenerIfExist($document, 'preSave');
     }
 
     /**
@@ -23,6 +24,7 @@ trait ListenerTrait
      */
     public function postSave(DocumentInterface $document)
     {
+        $this->executeListenerIfExist($document, 'postSave');
     }
 
     /**
@@ -31,6 +33,7 @@ trait ListenerTrait
      */
     public function preCreate(DocumentInterface $document)
     {
+        $this->executeListenerIfExist($document, 'preCreate');
     }
 
     /**
@@ -39,6 +42,7 @@ trait ListenerTrait
      */
     public function postCreate(DocumentInterface $document)
     {
+        $this->executeListenerIfExist($document, 'postCreate');
     }
 
     /**
@@ -47,6 +51,7 @@ trait ListenerTrait
      */
     public function preUpdate(DocumentInterface $document)
     {
+        $this->executeListenerIfExist($document, 'preUpdate');
     }
 
     /**
@@ -55,6 +60,7 @@ trait ListenerTrait
      */
     public function postUpdate(DocumentInterface $document)
     {
+        $this->executeListenerIfExist($document, 'postUpdate');
     }
 
     /**
@@ -63,6 +69,7 @@ trait ListenerTrait
      */
     public function preRemove(DocumentInterface $document)
     {
+        $this->executeListenerIfExist($document, 'preRemove');
     }
 
     /**
@@ -71,5 +78,18 @@ trait ListenerTrait
      */
     public function postRemove(DocumentInterface $document)
     {
+        $this->executeListenerIfExist($document, 'postRemove');
+    }
+
+    /**
+     * executeListenerIfExist
+     * @param  DocumentInterface $document
+     * @param  string            $listener
+     */
+    protected function executeListenerIfExist(DocumentInterface $document, $listener)
+    {
+        if (method_exists($document, $listener)) {
+            $document->$listener();
+        }       
     }
 }

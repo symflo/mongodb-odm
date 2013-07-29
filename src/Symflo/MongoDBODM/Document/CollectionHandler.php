@@ -176,7 +176,11 @@ class CollectionHandler
         return $data;
     }
 
-
+    /**
+     * hydrateDocument
+     * @param  array  $array
+     * @return documentInterface
+     */
     private function hydrateDocument(array $array)
     {
         $document = $this->normalizer->denormalize($array, $this->collection->getDocumentClass());

@@ -11,7 +11,7 @@ use Symflo\MongoDBODM\Validator\ValidatorDocumentInterface;
  */
 class DocumentManager
 {
-    use \Symflo\MongoDBODM\Behaviour\ListenerTrait;
+    use \Symflo\MongoDBODM\Behavior\ListenerTrait;
 
     private $collection;
     private $normalizer;

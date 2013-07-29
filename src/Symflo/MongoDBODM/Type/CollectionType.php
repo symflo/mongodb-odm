@@ -2,6 +2,8 @@
 
 namespace Symflo\MongoDBODM\Type;
 
+use Symflo\MongoDBODM\Document\DocumentCollection;
+
 /**
  * CollectionType
  * @author Florent Mondoloni
@@ -38,11 +40,11 @@ class CollectionType implements TypeInterface
      */
     public function hydrate($value, $propertyOptions)
     {
-        $documentsArray = array();
+        $documentCollection = new DocumentCollection();
         foreach ($value as $doc) {
-            $documentsArray[] = $this->normalizer->denormalize($doc, $propertyOptions['reference']);
+            $documentCollection->add($this->normalizer->denormalize($doc, $propertyOptions['reference']));
         }
 
-        return $documentsArray;
+        return $documentCollection;
     }
 }

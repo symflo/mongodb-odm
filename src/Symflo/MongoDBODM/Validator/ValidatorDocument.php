@@ -34,10 +34,20 @@ class ValidatorDocument implements ValidatorDocumentInterface
             $type = $this->configurator->getTypeForName($typeOptions['type']);
             if (empty($value) && false === $typeOptions['required']) {
                 continue;
+            } elseif ((empty($value) && $typeOptions['required'])) {
+                $this->addError(array(
+                    'document' => get_class($document),
+                    'property' => $property,
+                    'message'  => 'field is required'
+                ));
             }
 
             if (false === $type->validate($value)) {
-                $this->addError($type->getError());
+                $this->addError(array(
+                    'document' => get_class($document),
+                    'property' => $property,
+                    'message'  => $type->getError()
+                ));
             }
         }
 

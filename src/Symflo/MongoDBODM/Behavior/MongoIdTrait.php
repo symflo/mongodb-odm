@@ -1,6 +1,6 @@
 <?php
 
-namespace Symflo\MongoDBODM\Behaviour;
+namespace Symflo\MongoDBODM\Behavior;
 
 /**
  * @author Florent Mondoloni
