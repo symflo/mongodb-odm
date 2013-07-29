@@ -1,6 +1,6 @@
 # MongoDB ODM for PHP
 
-Simple Object Document Mapper for PHP and MongoDB. IN PROGRESS.
+Simple Object Document Mapper for PHP and MongoDB.
 
 ## Requirements
 
