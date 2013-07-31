@@ -43,9 +43,9 @@ class DocumentManagerFactory
             'collection'       => new \Symflo\MongoDBODM\Type\CollectionType($normalizer)
         );
 
-        $m->getConfigurator()->setDefaultTypes($types);
-        $m->getConfigurator()->setConfig($config);
-        $m->init();
+        $documentManager->getConnection()->getConfigurator()->setDefaultTypes($types);
+        $documentManager->getConnection()->getConfigurator()->setConfig($config);
+        $documentManager->getConnection()->init();
 
         return $documentManager;
     }
