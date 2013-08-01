@@ -31,6 +31,7 @@ class DocumentManagerFactory
         $validatorDocument = new ValidatorDocument($configurator);
 
         $documentManager = new DocumentManager($m, $collectionHandler, $validatorDocument);
+        $indexer = new EnsureIndexer($documentManager, $configurator);
 
         //type services
         $types = array(
@@ -47,6 +48,6 @@ class DocumentManagerFactory
         $documentManager->getConnection()->getConfigurator()->setConfig($config);
         $documentManager->getConnection()->init();
 
-        return $documentManager;
+        return array($indexer, $documentManager);
     }
 }

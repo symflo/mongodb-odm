@@ -31,7 +31,7 @@ $config = array(
 );
 
 //Prefer DIC as this factory 
-$dm = DocumentManagerFactory::create($config);
+list($indexer, $dm) = DocumentManagerFactory::create($config);
 
 //Multiple insert
 $message = new \Symflo\MongoDBODM\Document\MessageDocument();
@@ -487,6 +487,37 @@ if (!$dm->save($user)) {
     }
 }
 
+?>
+```
+
+## Indexers
+
+Add on your collection static method `indexes`.
+```php
+<?php
+class UserCollection extends Collection
+{
+    // ...
+
+    public static function getIndexes()
+    {
+        return array(
+            array('keys' => array('createdAt' => 1), 'options' => array('expireAfterSeconds' => 60))
+        );
+    }
+
+    // ...
+}
+
+?>
+```
+
+Then apply indexes for example during a task. When you apply it, the old indexes are deleted and new ones are created.
+
+```php
+<?php
+list($indexer, $dm) = DocumentManagerFactory::create($config);
+$indexer->applyIndex();
 ?>
 ```
 
