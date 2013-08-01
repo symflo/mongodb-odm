@@ -490,7 +490,7 @@ if (!$dm->save($user)) {
 ?>
 ```
 
-## Indexers
+## EnsureIndex
 
 Add on your collection static method `indexes`.
 ```php
@@ -503,14 +503,15 @@ class UserCollection extends Collection
     {
         return array(
             array('keys' => array('createdAt' => 1), 'options' => array('expireAfterSeconds' => 60))
+            //...
         );
     }
 
     // ...
 }
-
 ?>
 ```
+Note:[expireAfterSeconds](http://www.codeproject.com/Tips/467689/MongoDB-Time-To-Live-TTL-Collections).
 
 Then apply indexes for example during a task. When you apply it, the old indexes are deleted and new ones are created.
 
