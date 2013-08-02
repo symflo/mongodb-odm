@@ -68,7 +68,8 @@ class ManualReferencesType implements TypeInterface, ManualReferenceTypeInterfac
             return $refIds;
         }
 
-        $referenceCollectionName = $propertyOptions['reference']::COLLECTION_NAME;
+        $configurator = $this->getDocumentManager()->getConnection()->getConfigurator();
+        $referenceCollectionName = $configurator->getCollectionNameForDocument($propertyOptions['reference']);
         $references = $this->getDocumentManager()
             ->getCollection($referenceCollectionName)
             ->find(array('_id' => array('$in' => $refIds)));

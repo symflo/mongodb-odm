@@ -22,8 +22,18 @@ $config = array(
     'database'            => 'db',
     'host'                => '127.0.0.1',
     'documents'           => array(
-        'user'    => 'Symflo\MongoDBODM\Document\UserDocument',
-        'message' => 'Symflo\MongoDBODM\Document\MessageDocument'
+        'user'    => array(
+            'class'           => 'Symflo\MongoDBODM\Document\UserDocument',
+            'collectionName'  => 'users',
+            'collectionClass' => 'Symflo\MongoDBODM\Document\UserCollection'
+        ),
+        'message'    => array(
+            'class'           => 'Symflo\MongoDBODM\Document\MessageDocument',
+            'collectionName'  => 'messages'
+        ),
+        'role'    => array(
+            'class' => 'Symflo\MongoDBODM\Document\RoleDocument'
+        )
     ),
     'types' => array(
         //'custom' => new \CustomPath\Type\myDateType(),
@@ -157,13 +167,20 @@ $config = array(
     'database'            => 'db',
     'host'                => '127.0.0.1',
     'documents'           => array(
-        'user'    => 'Your\NS\Document\UserDocument',
-        'message' => 'Your\NS\Document\MessageDocument',
-        ...
+        'user'    => array(
+            'class'           => 'Symflo\MongoDBODM\Document\UserDocument',
+            'collectionName'  => 'users',
+            'collectionClass' => 'Symflo\MongoDBODM\Document\UserCollection'
+        ),
+        'message'    => array(
+            'class'           => 'Symflo\MongoDBODM\Document\MessageDocument',
+            'collectionName'  => 'messages'
+        )
+        // ...
     ),
     'types' => array(
         //'custom' => new \CustomPath\Type\myDateType(), if you want create a custom type with own validator
-        // see Symflo\MongoDBODM\Configurator::getDefaultConfig() for list
+        // see Symflo\MongoDBODM\DocumentManagerFactory::create() for list
     )
 );
 ?>
@@ -188,16 +205,15 @@ class UserDocument implements DocumentInterface
 {
     use \Symflo\MongoDBODM\Behaviour\MongoIdTrait;
 
-    const COLLECTION_NAME   = 'users'; //
-    const COLLECTION_OBJECT = 'Symflo\MongoDBODM\Document\UserCollection'; //if you precice an object to manage collection else put null
-
     private $username;
     private $firstname;
     private $lastname;
     private $createdAt;
     private $messageId;
+    private $messageIds;
     private $message;
     private $messages;
+    private $roles;
 
     /**
      * {% inheritdoc %}
@@ -307,9 +323,6 @@ class MessageDocument implements DocumentInterface
 {
     use \Symflo\MongoDBODM\Behaviour\MongoIdTrait;
 
-    const COLLECTION_NAME   = 'messages';
-    const COLLECTION_OBJECT = null;
-
     private $text;
 
     /**
@@ -344,9 +357,6 @@ namespace Symflo\MongoDBODM\Document;
 
 class RoleDocument implements DocumentInterface
 {
-    const COLLECTION_NAME   = null;
-    const COLLECTION_OBJECT = null;
-
     private $role;
     private $addedAt;
 
@@ -523,6 +533,7 @@ $indexer->applyIndex();
 ```
 
 ## TODOS
+* service Listeners for preSave... more complex
 * Better errors
 * Tests
 * Better docs

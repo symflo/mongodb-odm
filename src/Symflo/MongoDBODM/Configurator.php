@@ -2,6 +2,8 @@
 
 namespace Symflo\MongoDBODM;
 
+use Symflo\MongoDBODM\Document\DocumentInterface;
+
 /**
  * Configurator
  * @author Florent Mondoloni
@@ -101,7 +103,12 @@ class Configurator
             throw new \InvalidArgumentException('You must create list documents in your configuration');
         }
 
-        return $this->config['documents'];
+        return array_map(function($value) {
+            return array_merge(array(
+                'collectionName'  => null,
+                'collectionClass' => null,
+            ), $value);
+        }, $this->config['documents']);
     }
 
     /**
@@ -111,8 +118,8 @@ class Configurator
      */
     public function supportCollection($collection)
     {
-        foreach ($this->getDocuments() as $documentClass) {
-            if ($documentClass::COLLECTION_NAME == $collection) {
+        foreach ($this->getDocuments() as $documentOptions) {
+            if ($documentOptions['collectionName'] == $collection) {
                 return true;
             }
         }
@@ -147,5 +154,66 @@ class Configurator
     public function getBaseMongoCollection()
     {
         return $this->config['baseMongoCollection'];
+    }
+
+    /**
+     * getCollectionNameForDocument
+     * @param  string $documentClass
+     * @return string
+     */
+    public function getCollectionNameForDocument($documentClass)
+    {
+        return $this->getDocumentConfig($documentClass, 'collectionName');
+    }
+
+    /**
+     * getCollectionClassForDocument
+     * @param  string $documentClass
+     * @return string
+     */
+    public function getCollectionClassForDocument($documentClass)
+    {
+        return $this->getDocumentConfig($documentClass, 'collectionClass');
+    }
+
+    /**
+     * getNameForDocument
+     * @param  string $documentClass
+     * @return string
+     */
+    public function getNameForDocument($documentClass)
+    {
+        return $this->getDocumentConfig($documentClass, 'name');
+    }
+
+    /**
+     * getDocumentConfigs
+     * @param  string $documentClass
+     * @return array
+     */
+    private function getDocumentConfigs($documentClass)
+    {
+        foreach ($this->getDocuments() as $name => $documentConfigs) {
+            if ($documentConfigs['class'] == $documentClass) {
+                $documentConfigs['name'] = $name;
+                return $documentConfigs;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * getDocumentConfig
+     * @param  string $documentClass
+     * @param  string $config
+     * @return string
+     */
+    private function getDocumentConfig($documentClass, $config)
+    {
+        $configs = $this->getDocumentConfigs($documentClass);
+        if (null != $configs) {
+            return $configs[$config];
+        }
     }
 }

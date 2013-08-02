@@ -27,9 +27,9 @@ class EnsureIndexer
      */
     public function applyIndex()
     {
-        foreach ($this->configurator->getDocuments() as $document) {
-            $collectionClass = $document::COLLECTION_OBJECT;
-            $collectionName  = $document::COLLECTION_NAME;
+        foreach ($this->configurator->getDocuments() as $documentConfigs) {
+            $collectionClass = $documentConfigs['collectionClass'];
+            $collectionName  = $documentConfigs['collectionName'];
 
             if (null === $collectionClass && !method_exists($collectionClass, 'getIndexes')) {
                 continue;

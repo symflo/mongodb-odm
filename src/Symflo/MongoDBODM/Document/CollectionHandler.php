@@ -105,10 +105,10 @@ class CollectionHandler
     {
         if ($document instanceOf DocumentInterface) {
             $mongoId = $document->getMongoId();    
-        } elseif (array_key_exists('_id', $document)) {
+        } elseif (is_array($document) && array_key_exists('_id', $document)) {
             $mongoId = $document['_id'];
         } else {
-            throw new \Exception("Document must implement Symflo\MongoDBODM\Document\DocumentInterface or $key _id");
+            throw new \Exception("Document must implement Symflo\MongoDBODM\Document\DocumentInterface or key _id");
         }
 
         return $mongoId;
@@ -205,7 +205,9 @@ class CollectionHandler
             $getter = 'get'.ucfirst($propertyOptions['property']);
             $setter = 'set'.ucfirst($propertyOptions['target']);
 
-            $document->$setter($typeObject->hydrate($document->$getter(), $propertyOptions));
+            if (null != $document->$getter()) {
+                $document->$setter($typeObject->hydrate($document->$getter(), $propertyOptions));
+            }
         }
 
         return $document;

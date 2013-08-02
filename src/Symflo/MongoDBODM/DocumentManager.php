@@ -190,15 +190,15 @@ class DocumentManager
             throw new \InvalidArgumentException(sprintf('Collection %s does not defined', $collection));
         }
 
-        $documents = $this->connection->getConfigurator()->getDocuments();
-        foreach ($documents as $documentClass) {
-            if ($documentClass::COLLECTION_NAME == $collection) {
-                $class = $documentClass::COLLECTION_OBJECT;
+        $configurator = $this->connection->getConfigurator();
+        foreach ($configurator->getDocuments() as $documentOptions) {
+            if ($documentOptions['collectionName'] == $collection) {
+                $class = $documentOptions['collectionClass'];
                 if (null === $class) {
-                    $class = $this->connection->getConfigurator()->getBaseMongoCollection();
+                    $class = $configurator->getBaseMongoCollection();
                 }
 
-                $collectionObject = new $class($this->connection->getDb()->$collection, $documentClass, $this->collectionHandler);
+                $collectionObject = new $class($this->connection->getDb()->$collection, $documentOptions['class'], $this->collectionHandler);
                 $this->collectionInstanced[$collection] = $collectionObject;
 
                 $this->collectionHandler->setDocumentManager($this);
@@ -217,7 +217,7 @@ class DocumentManager
      */
     public function findCollectionForDocument(DocumentInterface $document)
     {
-        $collection = $document::COLLECTION_NAME;
+        $collection = $this->connection->getConfigurator()->getCollectionNameForDocument(get_class($document));
         return $this->connection->getDb()->$collection;
     }
 
