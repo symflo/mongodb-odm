@@ -16,7 +16,6 @@ use Symflo\MongoDBODM\Document\DocumentCollection;
 class ODMNormalizer extends GetSetMethodNormalizer implements NormalizerInterface, DenormalizerInterface
 {
     protected $attributes = array();
-    protected $configurator;
     
     /**
      * Set attributes for normalization

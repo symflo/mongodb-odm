@@ -41,7 +41,7 @@ class DocumentManagerFactory
             'pass'             => new \Symflo\MongoDBODM\Type\PassType(),
             'manualReference'  => new \Symflo\MongoDBODM\Type\ManualReferenceType($documentManager),
             'manualReferences' => new \Symflo\MongoDBODM\Type\ManualReferencesType($documentManager),
-            'collection'       => new \Symflo\MongoDBODM\Type\CollectionType($normalizer)
+            'collection'       => new \Symflo\MongoDBODM\Type\CollectionType($configurator, $normalizer)
         );
 
         $documentManager->getConnection()->getConfigurator()->setDefaultTypes($types);

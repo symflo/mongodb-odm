@@ -216,4 +216,14 @@ class Configurator
             return $configs[$config];
         }
     }
+
+    /**
+     * getClassForDocumentName
+     * @param  string $name
+     * @return string
+     */
+    public function getClassForDocumentName($name)
+    {
+        return $this->getDocuments()[$name]['class'];
+    }
 }

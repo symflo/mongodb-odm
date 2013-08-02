@@ -11,14 +11,17 @@ use Symflo\MongoDBODM\Document\DocumentCollection;
 class CollectionType implements TypeInterface
 {   
     private $normalizer;
+    private $configurator;
 
     /**
      * __construct
+     * @param $configurator
      * @param $normalizer
      */
-    public function __construct($normalizer)
+    public function __construct($configurator, $normalizer)
     {
-        $this->normalizer = $normalizer;
+        $this->configurator = $configurator;
+        $this->normalizer   = $normalizer;
     }
 
     /**
@@ -26,6 +29,7 @@ class CollectionType implements TypeInterface
      */
     public function validate($value)
     {
+        return true;
     }
 
     /**
@@ -33,6 +37,7 @@ class CollectionType implements TypeInterface
      */
     public function getError()
     {
+        return '';
     }
 
     /**
@@ -42,7 +47,8 @@ class CollectionType implements TypeInterface
     {
         $documentCollection = new DocumentCollection();
         foreach ($value as $doc) {
-            $documentCollection->add($this->normalizer->denormalize($doc, $propertyOptions['reference']));
+            $reference = $this->configurator->getClassForDocumentName($propertyOptions['reference']);
+            $documentCollection->add($this->normalizer->denormalize($doc, $reference));
         }
 
         return $documentCollection;

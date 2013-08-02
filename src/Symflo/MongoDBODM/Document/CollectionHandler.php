@@ -130,28 +130,6 @@ class CollectionHandler
     }
 
     /**
-     * getReferenceManualForDocument
-     * @param  DocumentInterface $document
-     * @param  string $type
-     * @return array property with reference Manual
-     */
-    public static function getPropertiesForTypeForDocument(DocumentInterface $document, $type)
-    {
-        $referenceManualProperties = array();
-        foreach ($document->getProperties() as $property => $typeOptions) {
-            if ($typeOptions['type'] == $type) {
-                $referenceManualProperties[] = array(
-                    'property'  => $property, 
-                    'reference' => $typeOptions['reference'],
-                    'target'    => (array_key_exists('target', $typeOptions)) ? $typeOptions['target']: $property
-                    );
-            }
-        }
-
-        return $referenceManualProperties;
-    }
-
-    /**
      * __call
      */
     public function __call($name, $args)

@@ -225,9 +225,9 @@ class UserDocument implements DocumentInterface
             'firstname'  => array('type' => 'string', 'required' => true),
             'lastname'   => array('type' => 'string'),
             'createdAt'  => array('type' => 'date'),
-            'messageId'  => array('type' => 'manualReference', 'reference' => 'Symflo\MongoDBODM\Document\MessageDocument', 'target' => 'message'),
-            'messageIds' => array('type' => 'manualReferences', 'reference' => 'Symflo\MongoDBODM\Document\MessageDocument', 'target' => 'messages'),
-            'roles'      => array('type' => 'collection', 'reference' => 'Symflo\MongoDBODM\Document\RoleDocument')
+            'messageId'  => array('type' => 'manualReference', 'reference' => 'message', 'target' => 'message'),
+            'messageIds' => array('type' => 'manualReferences', 'reference' => 'message', 'target' => 'messages'),
+            'roles'      => array('type' => 'collection', 'reference' => 'role')
         );
     }
 

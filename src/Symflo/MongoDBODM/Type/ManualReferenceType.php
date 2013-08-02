@@ -43,7 +43,8 @@ class ManualReferenceType implements TypeInterface, ManualReferenceTypeInterface
     public function hydrate($value, $propertyOptions)
     {
         $configurator = $this->documentManager->getConnection()->getConfigurator();
-        $referenceCollectionName = $configurator->getCollectionNameForDocument($propertyOptions['reference']);
+        $referenceClass = $configurator->getClassForDocumentName($propertyOptions['reference']);
+        $referenceCollectionName = $configurator->getCollectionNameForDocument($referenceClass);
         
         $reference = $this->documentManager
             ->getCollection($referenceCollectionName)
