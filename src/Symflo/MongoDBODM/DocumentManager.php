@@ -47,22 +47,8 @@ class DocumentManager
      */
     public function save($document)
     {
-        if (is_array($document)) {
-            foreach ($document as $doc) {
-                if (!$this->getValidatorDocument()->validate($doc)) {
-                    return false;
-                }
-
-                if (false === $this->save($doc)) {
-                    return false;
-                }
-            }
-
-            return true;
-        } else {
-            if (!$this->getValidatorDocument()->validate($document)) {
-                return false;
-            }    
+        if (false === $this->validateDocument($document)) {
+            return false;
         }
 
         $this->preSave($document);
@@ -120,11 +106,6 @@ class DocumentManager
     protected function create(DocumentInterface $document)
     {
         $this->preCreate($document);
-        
-        if (null != $document->getId()) {
-            $document->set_id($document->getId());
-        }
-
         $properties = $this->getPropertiesToSave($document);
         $this->collection->save($properties);
         $document->set_id($properties['_id']);
@@ -163,6 +144,12 @@ class DocumentManager
      */
     public function getPropertiesToSave(DocumentInterface $document)
     {
+        if (method_exists($document, 'get_id') 
+            && $this->isNew($document) 
+            && null != $document->getId()) {
+            $document->set_id($document->getId());
+        }
+
         return $this->collectionHandler->getNormalizer()->normalize($document);
     }
 
@@ -240,5 +227,31 @@ class DocumentManager
     public function getValidatorDocument()
     {
         return $this->validatorDocument;
+    }
+
+    /**
+     * validateDocument
+     * @param  DocumentInterface|array $document
+     * @return boolean
+     */
+    private function validateDocument($document)
+    {
+        if (is_array($document)) {
+            foreach ($document as $doc) {
+                if (!$this->getValidatorDocument()->validate($doc)) {
+                    return false;
+                }
+
+                if (false === $this->save($doc)) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            if (!$this->getValidatorDocument()->validate($document)) {
+                return false;
+            }    
+        }
     }
 }
