@@ -15,24 +15,15 @@ use Symflo\MongoDBODM\Document\DocumentCollection;
  */
 class ODMNormalizer extends GetSetMethodNormalizer implements NormalizerInterface, DenormalizerInterface
 {
-    protected $attributes = array();
-    
-    /**
-     * Set attributes for normalization
-     *
-     * @param array $attributes
-     */
-    public function setAttributes(array $attributes)
-    {
-        $this->attributes = $attributes;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $this->setAttributes(array_keys($object->getProperties()));
+        $attributesChoice = array_keys($object->getProperties());
+        if (method_exists($object, 'get_id') && null !== $object->get_id()) {
+            $attributesChoice[] = '_id';
+        }
 
         $reflectionObject = new \ReflectionObject($object);
         $reflectionMethods = $reflectionObject->getMethods(\ReflectionMethod::IS_PUBLIC);
@@ -42,14 +33,14 @@ class ODMNormalizer extends GetSetMethodNormalizer implements NormalizerInterfac
             if ($this->isGetMethodAlias($method)) {
                 $attributeName = lcfirst(substr($method->name, 3));
 
-                if (!in_array($attributeName, $this->attributes)) {
+                if (!in_array($attributeName, $attributesChoice)) {
                     continue;
                 }
 
                 if (in_array($attributeName, $this->ignoredAttributes)) {
                     continue;
                 }
-
+                
                 $attributeValue = $method->invoke($object);
                 if (array_key_exists($attributeName, $this->callbacks)) {
                     $attributeValue = call_user_func($this->callbacks[$attributeName], $attributeValue);

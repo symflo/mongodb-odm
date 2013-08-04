@@ -130,6 +130,7 @@ $roleSuperAdmin->setRole('ROLE_SUPER_ADMIN');
 $roleSuperAdmin->setAddedAt((new DateTime())->format('Y-m-d H:i:s'));
 
 $user = new \Symflo\MongoDBODM\Document\UserDocument();
+//$user->setId('your_custom_id');
 $user->setUsername('TES3');
 $user->setFirstname('Norris');
 $user->setMessage($message);

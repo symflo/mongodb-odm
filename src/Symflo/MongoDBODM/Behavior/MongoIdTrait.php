@@ -8,13 +8,34 @@ namespace Symflo\MongoDBODM\Behavior;
 trait MongoIdTrait
 {
     private $_id;
+    private $id;
+
+    /**
+     * Get Id.
+     *
+     * @return type Id value
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    /**
+     * Set Id.
+     *
+     * @param type $id Id value
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * Get _id.
      *
      * @return string
      */
-    public function get_Id()
+    public function get_id()
     {
         return $this->_id;
     }
@@ -24,9 +45,10 @@ trait MongoIdTrait
      *
      * @param string $_id
      */
-    public function set_Id($_id)
+    public function set_id($_id)
     {
         $this->_id = $_id;
+        $this->setId($_id);
     }    
 
     /**
@@ -35,10 +57,10 @@ trait MongoIdTrait
      */
     public function getMongoId()
     {
-        if (null === $this->get_Id()) {
+        if (null === $this->get_id()) {
             return null;
         }
         
-        return new \MongoID($this->get_Id());
+        return new \MongoID($this->get_id());
     }
 }

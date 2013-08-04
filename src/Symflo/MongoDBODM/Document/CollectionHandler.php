@@ -104,7 +104,7 @@ class CollectionHandler
     public static function getId($document)
     {
         if ($document instanceOf DocumentInterface) {
-            $mongoId = $document->getMongoId();    
+            $mongoId = $document->get_id();    
         } elseif (is_array($document) && array_key_exists('_id', $document)) {
             $mongoId = $document['_id'];
         } else {
@@ -162,6 +162,7 @@ class CollectionHandler
     private function hydrateDocument(array $array)
     {
         $document = $this->normalizer->denormalize($array, $this->collection->getDocumentClass());
+
         if (!$this->hasJoins()) {
             return $document;
         }

@@ -109,7 +109,7 @@ class DocumentManager
     public function remove(DocumentInterface $document)
     {
         $this->preRemove($document);
-        $this->collection->remove(array('_id', $document->getMongoId()));
+        $this->collection->remove(array('_id', $document->get_id()));
         $this->postRemove($document);
     }
 
@@ -120,9 +120,12 @@ class DocumentManager
     protected function create(DocumentInterface $document)
     {
         $this->preCreate($document);
+        
+        if (null != $document->getId()) {
+            $document->set_id($document->getId());
+        }
 
         $properties = $this->getPropertiesToSave($document);
-
         $this->collection->save($properties);
         $document->set_id($properties['_id']);
         $this->postCreate($document);
@@ -148,7 +151,7 @@ class DocumentManager
     public function push(DocumentInterface $document, $property, DocumentInterface $documentToPush)
     {
         $this->collection->update(
-            array("_id" => $document->getMongoId()), 
+            array("_id" => $document->get_id()), 
             array('$push' => array($property => $this->getPropertiesToSave($documentToPush)))
         );
     }
@@ -170,7 +173,7 @@ class DocumentManager
      */
     private function isNew(DocumentInterface $document)
     {
-        return (bool) (null == $document->getMongoId());
+        return (bool) (null === $document->get_id());
     }
 
     /**
