@@ -48,7 +48,7 @@ class ValidatorDocument implements ValidatorDocumentInterface
         $value = $document->$method();
         $type = $this->configurator->getTypeForName($typeOptions['type']);
         if (empty($value) && false === $typeOptions['required']) {
-            continue;
+            return false;
         } elseif ((empty($value) && $typeOptions['required'])) {
             $this->addError(array(
                 'document' => get_class($document),
