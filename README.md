@@ -209,6 +209,7 @@ class UserDocument implements DocumentInterface
     private $username;
     private $firstname;
     private $lastname;
+    private $isAdmin;
     private $createdAt;
     private $messageId;
     private $messageIds;
@@ -225,6 +226,7 @@ class UserDocument implements DocumentInterface
             'username'   => array('type' => 'string', 'required' => true),
             'firstname'  => array('type' => 'string', 'required' => true),
             'lastname'   => array('type' => 'string'),
+            'isAdmin'    => array('type' => 'boolean', 'default' => false),
             'createdAt'  => array('type' => 'date'),
             'messageId'  => array('type' => 'manualReference', 'reference' => 'message', 'target' => 'message'),
             'messageIds' => array('type' => 'manualReferences', 'reference' => 'message', 'target' => 'messages'),
@@ -312,6 +314,16 @@ class UserDocument implements DocumentInterface
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    public function getIsAdmin()
+    {
+        return $this->isAdmin;
+    }
+    
+    public function setIsAdmin($isAdmin)
+    {
+        $this->isAdmin = $isAdmin;
     }
 }
 ?>

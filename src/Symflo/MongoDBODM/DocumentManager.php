@@ -150,7 +150,33 @@ class DocumentManager
             $document->set_id($document->getId());
         }
 
+        $this->assignDefaultValue($document);
+
         return $this->collectionHandler->getNormalizer()->normalize($document);
+    }
+
+    /**
+     * assignDefaultValue before save
+     * @param  DocumentInterface $document
+     */
+    public function assignDefaultValue(DocumentInterface $document)
+    {
+        foreach ($document->getProperties() as $property => $typeOptions) {
+            if (!array_key_exists('default', $typeOptions)) {
+                continue;
+            }
+
+            $getter = 'get'.ucfirst($property);
+
+            if (null === $document->$getter()) {
+                $setter = 'set'.ucfirst($property);
+                $document->$setter($typeOptions['default']);
+
+                if (false === $this->getValidatorDocument()->validateOneProperty($document, $property, $typeOptions)) {
+                    throw new \Exception(sprintf("Value %s is not a valid default value", $typeOptions['default']));
+                }
+            }
+        }
     }
 
     /**

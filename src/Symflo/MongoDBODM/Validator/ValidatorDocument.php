@@ -28,27 +28,41 @@ class ValidatorDocument implements ValidatorDocumentInterface
     public function validate(DocumentInterface $document)
     {
         foreach ($document->getProperties() as $property => $typeOptions) {
-            $typeOptions = array_merge($this->getDefaultOptionsType(), $typeOptions);
-            $method = 'get'.ucfirst($property);
-            $value = $document->$method();
-            $type = $this->configurator->getTypeForName($typeOptions['type']);
-            if (empty($value) && false === $typeOptions['required']) {
-                continue;
-            } elseif ((empty($value) && $typeOptions['required'])) {
-                $this->addError(array(
-                    'document' => get_class($document),
-                    'property' => $property,
-                    'message'  => 'field is required'
-                ));
-            }
+            $isValid = $this->validateOneProperty($document, $property, $typeOptions);
+        }
 
-            if (false === $type->validate($value)) {
-                $this->addError(array(
-                    'document' => get_class($document),
-                    'property' => $property,
-                    'message'  => $type->getError()
-                ));
-            }
+        return (bool) !(count($this->getErrors()) > 0);
+    }
+
+    /**
+     * validateOneProperty
+     * @param  DocumentInterface $document
+     * @param  string $property
+     * @param  array $typeOptions
+     * @return boolean
+     */
+    public function validateOneProperty(DocumentInterface $document, $property, $typeOptions)
+    {
+        $typeOptions = array_merge($this->getDefaultOptionsType(), $typeOptions);
+        $method = 'get'.ucfirst($property);
+        $value = $document->$method();
+        $type = $this->configurator->getTypeForName($typeOptions['type']);
+        if (empty($value) && false === $typeOptions['required']) {
+            continue;
+        } elseif ((empty($value) && $typeOptions['required'])) {
+            $this->addError(array(
+                'document' => get_class($document),
+                'property' => $property,
+                'message'  => 'field is required'
+            ));
+        }
+
+        if (false === $type->validate($value)) {
+            $this->addError(array(
+                'document' => get_class($document),
+                'property' => $property,
+                'message'  => $type->getError()
+            ));
         }
 
         return (bool) !(count($this->getErrors()) > 0);

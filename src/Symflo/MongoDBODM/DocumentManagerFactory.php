@@ -38,6 +38,7 @@ class DocumentManagerFactory
             'date'             => new \Symflo\MongoDBODM\Type\DateType(),
             'string'           => new \Symflo\MongoDBODM\Type\StringType(),
             'integer'          => new \Symflo\MongoDBODM\Type\IntegerType(),
+            'boolean'          => new \Symflo\MongoDBODM\Type\BooleanType(),
             'pass'             => new \Symflo\MongoDBODM\Type\PassType(),
             'manualReference'  => new \Symflo\MongoDBODM\Type\ManualReferenceType($documentManager),
             'manualReferences' => new \Symflo\MongoDBODM\Type\ManualReferencesType($documentManager),
