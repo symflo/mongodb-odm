@@ -8,6 +8,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\RuntimeException;
 use Symflo\MongoDBODM\Document\DocumentCollection;
+use Symflo\MongoDBODM\Document\DocumentInterface;
 
 /**
  * ODMNormalizer
@@ -42,17 +43,24 @@ class ODMNormalizer extends GetSetMethodNormalizer implements NormalizerInterfac
                 }
                 
                 $attributeValue = $method->invoke($object);
+
                 if (array_key_exists($attributeName, $this->callbacks)) {
                     $attributeValue = call_user_func($this->callbacks[$attributeName], $attributeValue);
                 }
 
-                if (null !== $attributeValue && $attributeValue instanceof DocumentCollection) {
-                    $newAttributeValue = array();
-                    foreach ($attributeValue as $value) {
-                        $newAttributeValue[] = $this->normalize($value, $format);
+                if (null !== $attributeValue) {
+                    if ($attributeValue instanceof DocumentInterface) {
+                        $attributeValue = $this->normalize($attributeValue, $format);
                     }
 
-                    $attributeValue = $newAttributeValue;
+                    if ($attributeValue instanceof DocumentCollection) {
+                        $newAttributeValue = array();
+                        foreach ($attributeValue as $value) {
+                            $newAttributeValue[] = $this->normalize($value, $format);
+                        }
+
+                        $attributeValue = $newAttributeValue;
+                    }
                 }
 
                 $attributes[$attributeName] = $attributeValue;

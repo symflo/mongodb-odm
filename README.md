@@ -27,6 +27,9 @@ $config = array(
             'collectionName'  => 'users',
             'collectionClass' => 'Symflo\MongoDBODM\Document\UserCollection'
         ),
+        'preference' => array(
+            'class' => 'Symflo\MongoDBODM\Document\PreferenceDocument'
+        ),
         'message'    => array(
             'class'           => 'Symflo\MongoDBODM\Document\MessageDocument',
             'collectionName'  => 'messages'
@@ -117,7 +120,27 @@ $user->getMessageId(); //return \MongoId
 ?>
 ```
 
-Manage simple collection.
+Manage simple embedded.
+
+```php
+<?php
+$preference = new \Symflo\MongoDBODM\Document\PreferenceDocument();
+$preference->setAlert(true);
+
+$user = new \Symflo\MongoDBODM\Document\UserDocument();
+$user->setUsername('TES3');
+$user->setFirstname('Norris');
+$user->setMessage($message);
+$user->setMessages(array($message, $message2));
+$user->setCreatedAt(new \MongoDate());
+$user->setRoles(new DocumentCollection(array($roleAdmin, $roleAdmin, $roleSuperAdmin))); //Collection in user
+$user->setPreference($preference); //or $user->setPreference(array('alert' => true));
+$dm->save($user);
+
+?>
+```
+
+Manage embedded collection.
 
 ```php
 <?php
@@ -216,6 +239,7 @@ class UserDocument implements DocumentInterface
     private $message;
     private $messages;
     private $roles;
+    private $preference;
 
     /**
      * {% inheritdoc %}
@@ -230,7 +254,8 @@ class UserDocument implements DocumentInterface
             'createdAt'  => array('type' => 'date'),
             'messageId'  => array('type' => 'manualReference', 'reference' => 'message', 'target' => 'message'),
             'messageIds' => array('type' => 'manualReferences', 'reference' => 'message', 'target' => 'messages'),
-            'roles'      => array('type' => 'collection', 'reference' => 'role')
+            'roles'      => array('type' => 'embeddedCollection', 'reference' => 'role'),
+            'preference' => array('type' => 'embeddedOne', 'reference' => 'preference') //'reference' => 'preference' if you want a document else 'reference' => false to avoid to create a document class and get an array
         );
     }
 
@@ -325,9 +350,55 @@ class UserDocument implements DocumentInterface
     {
         $this->isAdmin = $isAdmin;
     }
+
+    public function getPreference()
+    {
+        return $this->preference;
+    }
+    
+    public function setPreference($preference)
+    {
+        $this->preference = $preference;
+    }
 }
 ?>
 ```
+
+### Preference
+
+If you indicate a reference for `embeddedOne` type, you have to create a document.
+
+```php
+<?php
+class PreferenceDocument implements DocumentInterface
+{
+    private $alert;
+
+    public function getProperties()
+    {
+        return array(
+            'alert'  => array('type' => 'boolean')
+        );
+    }
+
+    public function getMongoId()
+    {
+        return false;
+    }
+
+    public function getAlert()
+    {
+        return $this->alert;
+    }
+    
+    public function setAlert($alert)
+    {
+        $this->alert = $alert;
+    }
+}
+?>
+```
+
 ### Message
 
 ```php

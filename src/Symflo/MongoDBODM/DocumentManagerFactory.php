@@ -35,14 +35,15 @@ class DocumentManagerFactory
 
         //type services
         $types = array(
-            'date'             => new \Symflo\MongoDBODM\Type\DateType(),
-            'string'           => new \Symflo\MongoDBODM\Type\StringType(),
-            'integer'          => new \Symflo\MongoDBODM\Type\IntegerType(),
-            'boolean'          => new \Symflo\MongoDBODM\Type\BooleanType(),
-            'pass'             => new \Symflo\MongoDBODM\Type\PassType(),
-            'manualReference'  => new \Symflo\MongoDBODM\Type\ManualReferenceType($documentManager),
-            'manualReferences' => new \Symflo\MongoDBODM\Type\ManualReferencesType($documentManager),
-            'collection'       => new \Symflo\MongoDBODM\Type\CollectionType($configurator, $normalizer)
+            'date'               => new \Symflo\MongoDBODM\Type\DateType(),
+            'string'             => new \Symflo\MongoDBODM\Type\StringType(),
+            'integer'            => new \Symflo\MongoDBODM\Type\IntegerType(),
+            'boolean'            => new \Symflo\MongoDBODM\Type\BooleanType(),
+            'pass'               => new \Symflo\MongoDBODM\Type\PassType(),
+            'manualReference'    => new \Symflo\MongoDBODM\Type\ManualReferenceType($documentManager),
+            'manualReferences'   => new \Symflo\MongoDBODM\Type\ManualReferencesType($documentManager),
+            'embeddedOne'        => new \Symflo\MongoDBODM\Type\EmbeddedOneType($configurator, $normalizer),
+            'embeddedCollection' => new \Symflo\MongoDBODM\Type\EmbeddedCollectionType($configurator, $normalizer)
         );
 
         $documentManager->getConnection()->getConfigurator()->setDefaultTypes($types);

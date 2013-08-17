@@ -5,10 +5,10 @@ namespace Symflo\MongoDBODM\Type;
 use Symflo\MongoDBODM\Document\DocumentCollection;
 
 /**
- * CollectionType
+ * EmbeddedCollectionType
  * @author Florent Mondoloni
  */
-class CollectionType implements TypeInterface
+class EmbeddedCollectionType implements TypeInterface
 {   
     private $normalizer;
     private $configurator;
