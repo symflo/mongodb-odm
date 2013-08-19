@@ -137,6 +137,12 @@ $user->setRoles(new DocumentCollection(array($roleAdmin, $roleAdmin, $roleSuperA
 $user->setPreference($preference); //or $user->setPreference(array('alert' => true));
 $dm->save($user);
 
+//then
+
+$coll = $dm->getCollection('users');
+$coll->addJoin('preference') // get object instead of array
+     ->findOneByUsername('TES3');
+
 ?>
 ```
 

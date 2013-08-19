@@ -4,7 +4,6 @@ namespace Symflo\MongoDBODM\Document;
 
 use Symflo\MongoDBODM\Normalizer\ODMNormalizer;
 use Symflo\MongoDBODM\Document\DocumentInterface;
-use Symflo\MongoDBODM\Type\ManualReferenceTypeInterface;
 
 /**
  * CollectionHandler
@@ -171,7 +170,7 @@ class CollectionHandler
         foreach ($document->getProperties() as $property => $typeOptions) {
             $typeObject = $this->configurator->getTypeForName($typeOptions['type']);
 
-            if (!$this->hasJoin($property) && $typeObject instanceof ManualReferenceTypeInterface) {
+            if (!$this->hasJoin($property)) {
                 continue;
             }
 
