@@ -22,6 +22,10 @@ class ODMNormalizer extends GetSetMethodNormalizer implements NormalizerInterfac
     public function normalize($object, $format = null, array $context = array())
     {
         $attributesChoice = array_keys($object->getProperties());
+        if (in_array('id', $attributesChoice)) {
+            unset($attributesChoice[array_search('id', $attributesChoice)]);
+        }
+
         if (method_exists($object, 'get_id') && null !== $object->get_id()) {
             $attributesChoice[] = '_id';
         }
