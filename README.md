@@ -48,9 +48,11 @@ list($indexer, $dm) = DocumentManagerFactory::create($config);
 
 //Multiple insert
 $message = new \Symflo\MongoDBODM\Document\MessageDocument();
+$message->setId((string) new \MongoId());
 $message->setText('Text1');
 
 $message2 = new \Symflo\MongoDBODM\Document\MessageDocument();
+$message2->setId((string) new \MongoId());
 $message2->setText('Text2');
 
 $dm->batchInsert(array($message, $message2));
@@ -421,6 +423,7 @@ class MessageDocument implements DocumentInterface
     public function getProperties()
     {
         return array(
+            'id'    => array('type' => 'string', 'required' => true), //only if you want to define a other type else you get \MongoId
             'text'  => array('type' => 'string', 'required' => true)
         );
     }
@@ -623,7 +626,8 @@ $indexer->applyIndex();
 ```
 
 ## TODOS
+* transform method `getProperties` in config
 * service Listeners for preSave... more complex
-* Better errors
+* Better errors management
 * Tests
 * Better docs

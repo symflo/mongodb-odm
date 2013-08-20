@@ -2,8 +2,6 @@
 
 namespace Symflo\MongoDBODM\Type;
 
-use Symflo\MongoDBODM\Document\DocumentCollection;
-
 /**
  * ManualReferencesType
  * @author Florent Mondoloni
@@ -35,19 +33,9 @@ class ManualReferencesType implements TypeInterface, ManualReferenceTypeInterfac
     /**
      * {% inheritdoc %}
      */
-    public function validate($value)
+    public function validate($value, $document, $property, $propertyOptions)
     {
-        if (is_array($value) || $value instanceof DocumentCollection) {
-            foreach ($value as $mongoId) {
-                if (!$mongoId instanceof \MongoId) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return false;
+        return $this->validateReference($value, $propertyOptions);
     }
 
     /**
@@ -55,6 +43,7 @@ class ManualReferencesType implements TypeInterface, ManualReferenceTypeInterfac
      */
     public function getError()
     {
+        'References are not valid';
     }
 
     /**

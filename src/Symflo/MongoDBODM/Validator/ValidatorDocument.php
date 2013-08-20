@@ -57,7 +57,7 @@ class ValidatorDocument implements ValidatorDocumentInterface
             ));
         }
 
-        if (false === $type->validate($value)) {
+        if (false === $type->validate($value, $document, $property, $typeOptions)) {
             $this->addError(array(
                 'document' => get_class($document),
                 'property' => $property,

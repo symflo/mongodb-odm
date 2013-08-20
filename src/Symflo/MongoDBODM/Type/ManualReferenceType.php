@@ -24,9 +24,9 @@ class ManualReferenceType implements TypeInterface, ManualReferenceTypeInterface
     /**
      * {% inheritdoc %}
      */
-    public function validate($value)
+    public function validate($value, $document, $property, $propertyOptions)
     {
-        return ($value instanceof \MongoId);
+        return $this->validateReference(array($value), $propertyOptions);
     }
 
     /**
@@ -34,7 +34,7 @@ class ManualReferenceType implements TypeInterface, ManualReferenceTypeInterface
      */
     public function getError()
     {
-        return '';
+        return 'Reference is not valid';
     }
 
     /**
@@ -42,7 +42,7 @@ class ManualReferenceType implements TypeInterface, ManualReferenceTypeInterface
      */
     public function hydrate($value, $propertyOptions)
     {
-        $configurator = $this->documentManager->getConnection()->getConfigurator();
+        $configurator = $this->getConfigurator();
         $referenceClass = $configurator->getClassForDocumentName($propertyOptions['reference']);
         $referenceCollectionName = $configurator->getCollectionNameForDocument($referenceClass);
         

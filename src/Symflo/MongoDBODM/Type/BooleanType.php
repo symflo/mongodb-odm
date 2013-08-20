@@ -11,7 +11,7 @@ class BooleanType implements TypeInterface
     /**
      * {% inheritdoc %}
      */
-    public function validate($value)
+    public function validate($value, $document, $property, $propertyOptions)
     {
         return is_bool($value);
     }

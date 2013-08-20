@@ -11,9 +11,9 @@ class StringType implements TypeInterface
     /**
      * {% inheritdoc %}
      */
-    public function validate($value)
+    public function validate($value, $document, $property, $propertyOptions)
     {
-        return (is_scalar($value) || (is_object($value) && is_callable(array($value, '__toString'))));
+        return (is_string($value) || (is_object($value) && is_callable(array($value, '__toString'))));
     }
 
     /**
@@ -21,7 +21,7 @@ class StringType implements TypeInterface
      */
     public function getError()
     {
-        return 'Value is not string';
+        return 'Value is not a string';
     }
 
     /**
