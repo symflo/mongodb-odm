@@ -49,17 +49,15 @@ trait ManualReferenceTrait
                     }
                 }
             }
-
-            return true;
         } else {
             foreach ($values as $value) {
                 if (!$value instanceof \MongoId) {
                     return false;
                 }
             }
-
-            return true;
         }
+
+        return true;
     }
 
     /**
