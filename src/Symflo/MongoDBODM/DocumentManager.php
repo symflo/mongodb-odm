@@ -119,7 +119,11 @@ class DocumentManager
     protected function update(DocumentInterface $document)
     {
         $this->preUpdate($document);
-        $this->collection->save($this->getPropertiesToSave($document));
+        $newdata = $this->getPropertiesToSave($document);
+        if (array_key_exists('_id', $newdata)) {
+            unset($newdata['_id']);
+        }
+        $this->collection->update(array('_id' => $document->getId()), array('$set' => $newdata));
         $this->postUpdate($document);
     }
 
