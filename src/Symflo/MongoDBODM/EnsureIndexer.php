@@ -24,26 +24,46 @@ class EnsureIndexer
 
     /**
      * applyIndex
+     * @param  boolean $forceDelete
      */
-    public function applyIndex()
+    public function applyIndex($forceDelete = false)
     {
         foreach ($this->configurator->getDocuments() as $documentConfigs) {
             $collectionClass = $documentConfigs['collectionClass'];
             $collectionName  = $documentConfigs['collectionName'];
 
-            if (null === $collectionClass && !method_exists($collectionClass, 'getIndexes')) {
+            if (null === $collectionClass || !method_exists($collectionClass, 'getIndexes')) {
                 continue;
             }
 
             $indexes = $collectionClass::getIndexes();
             $collection = $this->documentManager->getCollection($collectionName);
-            $collection->deleteIndexes();
 
+            $indexesKeys = array();
             foreach ($indexes as $index) {
                 $index = array_merge(array('options' => array()), $index);
                 $this->validateIndex($index);
 
                 $collection->ensureIndex($index['keys'], $index['options']);
+                $indexesKeys[] = $index['keys'];
+            }
+
+            if ($forceDelete) {
+                $this->deleteIndexes($collection, $indexesKeys);
+            }
+        }
+    }
+
+    /**
+     * deleteIndexes
+     * @param  $collection 
+     * @param  array $indexesKeys 
+     */
+    public function deleteIndexes($collection, array $indexesKeys)
+    {
+        foreach ($collection->getIndexInfo() as $indexInfo) {
+            if (!in_array($indexInfo['key'], $indexesKeys)) {
+                $collection->deleteIndex($indexInfo['key']);
             }
         }
     }
