@@ -95,7 +95,8 @@ class DocumentManager
     public function remove(DocumentInterface $document)
     {
         $this->preRemove($document);
-        $this->collection->remove(array('_id', $document->get_id()));
+        $this->collection = $this->findCollectionForDocument($document);
+        $this->collection->remove(array('_id' => $document->getId()));
         $this->postRemove($document);
     }
 
